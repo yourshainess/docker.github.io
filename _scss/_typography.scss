@@ -12,6 +12,14 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Geomanist Regular';
+    src: url("../fonts/geomanist/hinted-Geomanist-Regular.eot");
+    src: url("../fonts/geomanist/hinted-Geomanist-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/geomanist/hinted-Geomanist-Regular.woff2") format("woff2"), url("../fonts/geomanist/hinted-Geomanist-Regular.woff") format("woff"), url("../fonts/geomanist/hinted-Geomanist-Regular.ttf") format("truetype"), url("../fonts/geomanist/hinted-Geomanist-Book.svg#Geomanist-Regular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
 h1,
 h2,
 h3,
@@ -19,7 +27,7 @@ h4,
 h5,
 h6 {
     font-family: $headings;
-    color: $body-text-color;
+    color: $body-text;
     clear: both;
     line-height: 26px;
 }
@@ -53,7 +61,7 @@ h6 {
 }
 
 p {
-    color: $body-text-color;
+    color: $body-text;
     font-family: $font;
     font-size: $body-text-size;
     line-height: 24px;

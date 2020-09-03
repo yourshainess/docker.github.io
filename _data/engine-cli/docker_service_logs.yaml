@@ -3,16 +3,25 @@ short: Fetch the logs of a service or task
 long: |-
   The `docker service logs` command batch-retrieves logs present at the time of execution.
 
+  > **Note**
+  >
+  > This is a cluster management command, and must be executed on a swarm
+  > manager node. To learn about managers and workers, refer to the
+  > [Swarm mode section](https://docs.docker.com/engine/swarm/) in the
+  > documentation.
+
   The `docker service logs` command can be used with either the name or ID of a
   service, or with the ID of a task. If a service is passed, it will display logs
   for all of the containers in that service. If a task is passed, it will only
   display logs from that particular task.
 
-  > **Note**: This command is only functional for services that are started with
+  > **Note**
+  >
+  > This command is only functional for services that are started with
   > the `json-file` or `journald` logging driver.
 
   For more information about selecting and configuring logging drivers, refer to
-  [Configure logging drivers](https://docs.docker.com/engine/admin/logging/overview/).
+  [Configure logging drivers](https://docs.docker.com/config/containers/logging/configure/).
 
   The `docker service logs --follow` command will continue streaming the new output from
   the service's `STDOUT` and `STDERR`.
@@ -52,6 +61,9 @@ options:
   deprecated: false
   min_api_version: "1.30"
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: follow
   shorthand: f
   value_type: bool
@@ -59,24 +71,36 @@ options:
   description: Follow log output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-resolve
   value_type: bool
   default_value: "false"
   description: Do not map IDs to Names in output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-task-ids
   value_type: bool
   default_value: "false"
   description: Do not include task IDs in output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-trunc
   value_type: bool
   default_value: "false"
   description: Do not truncate output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: raw
   value_type: bool
   default_value: "false"
@@ -84,18 +108,27 @@ options:
   deprecated: false
   min_api_version: "1.30"
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: since
   value_type: string
   description: |
     Show logs since timestamp (e.g. 2013-01-02T13:23:37) or relative (e.g. 42m for 42 minutes)
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: tail
   value_type: string
   default_value: all
   description: Number of lines to show from the end of the logs
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: timestamps
   shorthand: t
   value_type: bool
@@ -103,7 +136,13 @@ options:
   description: Show timestamps
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 deprecated: false
 min_api_version: "1.29"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

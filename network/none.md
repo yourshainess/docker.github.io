@@ -42,13 +42,13 @@ only the loopback device is created. The following example illustrates this.
     the `--rm` flag.
 
     ```bash
-    $ docker container rm no-net-alpine
+    $ docker stop no-net-alpine
     ```
 
 ## Next steps
 
--  Go through the [host networking tutorial](/network/network-tutorial-host.md)
-- Learn about [networking from the container's point of view](/config/containers/container-networking.md)
-- Learn about [bridge networks](/network/bridge.md)
-- Learn about [overlay networks](/network/overlay.md)
-- Learn about [Macvlan networks](/network/macvlan.md)
+-  Go through the [host networking tutorial](network-tutorial-host.md)
+- Learn about [networking from the container's point of view](../config/containers/container-networking.md)
+- Learn about [bridge networks](bridge.md)
+- Learn about [overlay networks](overlay.md)
+- Learn about [Macvlan networks](macvlan.md)

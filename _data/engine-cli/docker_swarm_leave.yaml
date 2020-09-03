@@ -20,11 +20,15 @@ options:
   description: Force this node to leave the swarm, ignoring warnings
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   Consider the following swarm, as seen from the manager:
 
   ```bash
   $ docker node ls
+
   ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
   7ln70fl22uw2dvjn2ft53m3q5    worker2   Ready   Active
   dkp8vy1dq1kxleu9g4u78tlag    worker1   Ready   Active
@@ -35,6 +39,7 @@ examples: |-
 
   ```bash
   $ docker swarm leave
+
   Node left the default swarm.
   ```
 
@@ -45,4 +50,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.24"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

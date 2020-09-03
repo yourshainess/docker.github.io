@@ -1,40 +1,44 @@
 ---
-description: Docker for Windows and Docker Toolbox
+description: Docker Desktop for Windows and Docker Toolbox
 keywords: windows, alpha, beta, toolbox, docker-machine, tutorial
 title: Migrate Docker Toolbox
 ---
 
 This page explains how to migrate your Docker Toolbox disk image, or images if
-you have them, to Docker for Windows.
+you have them, to Docker Desktop for Windows.
 
-In version 18.01.0 and higher, the Docker for Windows installer no longer
-prompts users to migrate from Docker Toolbox--you must do so manually.
+## How to migrate Docker Toolbox disk images to Docker Desktop
 
-## How to migrate Docker Toolbox disk images to Docker for Windows
+Docker Desktop does not propose Toolbox image migration as part of its
+installer since version 18.01.0. You can migrate existing Docker
+Toolbox images with the steps described below.
 
-> **Warning**: Migrating disk images from Docker Toolbox _clobbers_ Docker
-> images if they exist. The migration process replaces the entire VM with your
-> previous Docker Toolbox data.
+In a terminal, while running Toolbox, use `docker commit` to create an image snapshot
+from a container, for each container you wish to preserve:
 
-1.  Install [qemu](https://www.qemu.org/){: target="_blank" class="_"} (a machine emulator): [https://cloudbase.it/downloads/qemu-img-win-x64-2_3_0.zip](https://cloudbase.it/downloads/qemu-img-win-x64-2_3_0.zip).
-2.  Install [Docker for Windows](/docker-for-windows/install/){: target="_blank" class="_"}.
-3.  Stop Docker for Windows, if running.
-4.  Move your current Docker VM disk to a safe location:
+```
+> docker commit nginx
+sha256:1bc0ee792d144f0f9a1b926b862dc88b0206364b0931be700a313111025df022
+```
 
-    ```shell
-    mv 'C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\MobyLinuxVM.vhdx' C:/<any directory>
-    ```
+Next, export each of these images (and any other images you wish to keep):
 
-5.  Convert your Toolbox disk image:
+```
+> docker save -o nginx.tar sha256:1bc0ee792d144f0f9a1b926b862dc88b0206364b0931be700a313111025df022
+```
 
-    ```shell
-    qemu-img.exe convert 'C:\Users\<username>\.docker\machine\machines\default\disk.vmdk' -O vhdx -o subformat=dynamic -p 'C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\MobyLinuxVM.vhdx'
-    ```
+Next, when running Docker Desktop on Windows, reload all these images:
 
-6.  Restart Docker for Windows (with your converted disk).
+```
+> docker load -i nginx.tar
+Loaded image ID: sha256:1bc0ee792d144f0f9a1b926b862dc88b0206364b0931be700a313111025df022
+```
+
+Note these steps will not migrate any `docker volume` contents: these must
+be copied across manually.
 
 ## How to uninstall Docker Toolbox
 
 Whether or not you migrate your Docker Toolbox images, you may decide to
 uninstall it. For details on how to perform a clean uninstall of Toolbox,
-see [How to uninstall Toolbox](/toolbox/toolbox_install_windows/#how-to-uninstall-toolbox){: target="_blank" class="_"}.
+see [How to uninstall Toolbox](../toolbox/toolbox_install_windows.md#how-to-uninstall-toolbox){: target="_blank" class="_"}.

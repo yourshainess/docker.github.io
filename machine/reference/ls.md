@@ -2,6 +2,7 @@
 description: List machines
 keywords: machine, ls, subcommand
 title: docker-machine ls
+hide_from_sitemap: true
 ---
 
 ```none
@@ -97,21 +98,21 @@ when using the table directive, includes column headers as well.
 The following example uses a template without headers and outputs the `Name` and `Driver` entries separated by a colon
 for all running machines:
 
-```none
 {% raw %}
+```none
 $ docker-machine ls --format "{{.Name}}: {{.DriverName}}"
 default: virtualbox
 ec2: amazonec2
-{% endraw %}
 ```
+{% endraw %}
 
 To list all machine names with their driver in a table format you can use:
 
-```none
 {% raw %}
+```none
 $ docker-machine ls --format "table {{.Name}} {{.DriverName}}"
 NAME     DRIVER
 default  virtualbox
 ec2      amazonec2
-{% endraw %}
 ```
+{% endraw %}

@@ -16,7 +16,7 @@ Yes - see [Controlling startup order](startup-order.md).
 ## Why do my services take 10 seconds to recreate or stop?
 
 Compose stop attempts to stop a container by sending a `SIGTERM`. It then waits
-for a [default timeout of 10 seconds](./reference/stop.md).  After the timeout,
+for a [default timeout of 10 seconds](reference/stop.md).  After the timeout,
 a `SIGKILL` is sent to the container to forcefully kill it.  If you
 are waiting for this timeout, it means that your containers aren't shutting down
 when they receive the `SIGTERM` signal.
@@ -27,7 +27,7 @@ in containers.
 
 To fix this problem, try the following:
 
-* Make sure you're using the JSON form of `CMD` and `ENTRYPOINT`
+* Make sure you're using the exec form of `CMD` and `ENTRYPOINT`
 in your Dockerfile.
 
   For example use `["program", "arg1", "arg2"]` not `"program arg1 arg2"`.
@@ -47,16 +47,15 @@ add an explicit signal handler for `SIGTERM`.
 * If you can't modify the application, wrap the application in a lightweight init
 system (like [s6](http://skarnet.org/software/s6/)) or a signal proxy (like
 [dumb-init](https://github.com/Yelp/dumb-init) or
-[tini](https://github.com/krallin/tini)).  Either of these wrappers take care of
+[tini](https://github.com/krallin/tini)).  Either of these wrappers takes care of
 handling `SIGTERM` properly.
 
 ## How do I run multiple copies of a Compose file on the same host?
 
 Compose uses the project name to create unique identifiers for all of a
 project's  containers and other resources. To run multiple copies of a project,
-set a custom project name using the [`-p` command line
-option](./reference/overview.md) or the [`COMPOSE_PROJECT_NAME`
-environment variable](./reference/envvars.md#compose-project-name).
+set a custom project name using the [`-p` command line option](reference/overview.md)
+or the [`COMPOSE_PROJECT_NAME` environment variable](reference/envvars.md#compose_project_name).
 
 ## What's the difference between `up`, `run`, and `start`?
 
@@ -116,5 +115,5 @@ github](https://github.com/search?q=in%3Apath+docker-compose.yml+extension%3Ayml
 - [Get started with Django](django.md)
 - [Get started with Rails](rails.md)
 - [Get started with WordPress](wordpress.md)
-- [Command line reference](./reference/index.md)
-- [Compose file reference](compose-file.md)
+- [Command line reference](reference/index.md)
+- [Compose file reference](compose-file/index.md)

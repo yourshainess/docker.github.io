@@ -1,8 +1,16 @@
 command: docker node ps
 short: List tasks running on one or more nodes, defaults to current node
-long: Lists all the tasks on a Node that Docker knows about. You can filter using
-  the `-f` or `--filter` flag. Refer to the [filtering](#filtering) section for more
+long: |-
+  Lists all the tasks on a Node that Docker knows about. You can filter using the
+  `-f` or `--filter` flag. Refer to the [filtering](#filtering) section for more
   information about available filter options.
+
+  > **Note**
+  >
+  > This is a cluster management command, and must be executed on a swarm
+  > manager node. To learn about managers and workers, refer to the
+  > [Swarm mode section](https://docs.docker.com/engine/swarm/) in the
+  > documentation.
 usage: docker node ps [OPTIONS] [NODE...]
 pname: docker node
 plink: docker_node.yaml
@@ -13,23 +21,35 @@ options:
   description: Filter output based on conditions provided
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: format
   value_type: string
   description: Pretty-print tasks using a Go template
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-resolve
   value_type: bool
   default_value: "false"
   description: Do not map IDs to Names
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-trunc
   value_type: bool
   default_value: "false"
   description: Do not truncate output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: quiet
   shorthand: q
   value_type: bool
@@ -37,6 +57,9 @@ options:
   description: Only display task IDs
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ```bash
   $ docker node ps swarm-manager1
@@ -118,6 +141,7 @@ examples: |-
 
   Placeholder     | Description
   ----------------|------------------------------------------------------------------------------------------
+  `.ID`           | Task ID
   `.Name`         | Task name
   `.Image`        | Task image
   `.Node`         | Node ID
@@ -131,7 +155,7 @@ examples: |-
   `table` directive, includes column headers as well.
 
   The following example uses a template without headers and outputs the
-  `Name` and `Image` entries separated by a colon for all tasks:
+  `Name` and `Image` entries separated by a colon (`:`) for all tasks:
 
   ```bash
   $ docker node ps --format "{{.Name}}: {{.Image}}"
@@ -142,4 +166,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.24"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

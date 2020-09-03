@@ -2,6 +2,7 @@
 description: VMware vSphere driver for machine
 keywords: machine, VMware vSphere, driver
 title: VMware vSphere
+hide_from_sitemap: true
 ---
 
 Creates machines on a [VMware vSphere](http://www.vmware.com/products/vsphere)
@@ -49,4 +50,4 @@ The VMware vSphere driver uses the latest boot2docker image.
 | **`--vmwarevsphere-username`**    | `VSPHERE_USERNAME`        | -                        |
 | `--vmwarevsphere-vcenter-port`    | `VSPHERE_VCENTER_PORT`    | 443                      |
 | `--vmwarevsphere-vcenter`         | `VSPHERE_VCENTER`         | -                        |
-| `--vmwarevsphere-folder`          | `$VSPHERE_FOLDER`         | -                        |
+| `--vmwarevsphere-folder`          | `VSPHERE_FOLDER`          | -                        |

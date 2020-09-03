@@ -16,17 +16,26 @@ options:
   description: Provide filter values (e.g. 'enabled=true')
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: format
   value_type: string
   description: Pretty-print plugins using a Go template
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-trunc
   value_type: bool
   default_value: "false"
   description: Don't truncate output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: quiet
   shorthand: q
   value_type: bool
@@ -34,6 +43,9 @@ options:
   description: Only display plugin IDs
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ```bash
   $ docker plugin ls
@@ -79,8 +91,8 @@ examples: |-
 
   Valid placeholders for the Go template are listed below:
 
-  Placeholder    | Description
-  ---------------|------------------------------------------------------------------------------------------
+  Placeholder        | Description
+  -------------------|------------------------------------------------------------
   `.ID`              | Plugin ID
   `.Name`            | Plugin name
   `.Description`     | Plugin description
@@ -92,7 +104,7 @@ examples: |-
   `table` directive, includes column headers as well.
 
   The following example uses a template without headers and outputs the
-  `ID` and `Name` entries separated by a colon for all plugins:
+  `ID` and `Name` entries separated by a colon (`:`) for all plugins:
 
   ```bash
   $ docker plugin ls --format "{{.ID}}: {{.Name}}"
@@ -102,4 +114,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.25"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: false
 

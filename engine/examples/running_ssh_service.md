@@ -6,20 +6,29 @@ title: Dockerize an SSH service
 
 ## Build an `eg_sshd` image
 
+### Generate a secure root password for your image
+
+Using a static password for root access is dangerous. Create a random password before proceeding.
+
+### Build the image
+
 The following `Dockerfile` sets up an SSHd service in a container that you
 can use to connect to and inspect other container's volumes, or to get
-quick access to a test container.
+quick access to a test container. Make the following substitutions:
 
-```Dockerfile
-FROM ubuntu:16.04
+- With `RUN echo 'root:THEPASSWORDYOUCREATED' | chpasswd`, replace "THEPASSWORDYOUCREATED" with the password you've previously generated.
+- With `RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config`, use `without-password` instead of `prohibit-password` for Ubuntu 14.04.
+
+```dockerfile
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
-RUN echo 'root:screencast' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN echo 'root:THEPASSWORDYOUCREATED' | chpasswd
+RUN sed -i 's/#*PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
@@ -27,6 +36,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 ```
+
 
 Build the image using:
 
@@ -52,6 +62,8 @@ Docker daemon host:
 
 ```bash
 $ ssh root@192.168.1.2 -p 49154
+# or
+$ ssh root@localhost -p 49154
 # The password is ``screencast``.
 root@f38c87f2a42d:/#
 ```

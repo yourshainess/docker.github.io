@@ -4,6 +4,8 @@ keywords: registry, on-prem, images, tags, repository, distribution, deployment
 title: Deploy a registry server
 ---
 
+{% include registry.md %}
+
 Before you can deploy a registry, you need to install Docker on the host.
 A registry is an instance of the `registry` image, and runs within Docker.
 
@@ -144,14 +146,13 @@ $ docker run -d \
 
 ### Customize the storage location
 
-By default, your registry data is persisted as a [docker
-volume](/engine/tutorials/dockervolumes.md) on the host filesystem. If you want
-to store your registry contents at a specific location on your host filesystem,
-such as if you have an SSD or SAN mounted into a particular directory, you might
-decide to use a bind mount instead. A bind mount is more dependent on the
-filesystem layout of the Docker host, but more performant in many situations.
-The following example bind-mounts the host directory `/mnt/registry` into the
-registry container at `/var/lib/registry/`.
+By default, your registry data is persisted as a [docker volume](../storage/volumes.md)
+on the host filesystem. If you want to store your registry contents at a specific
+location on your host filesystem, such as if you have an SSD or SAN mounted into
+a particular directory, you might decide to use a bind mount instead. A bind mount
+is more dependent on the filesystem layout of the Docker host, but more performant
+in many situations. The following example bind-mounts the host directory
+`/mnt/registry` into the registry container at `/var/lib/registry/`.
 
 ```bash
 $ docker run -d \
@@ -166,9 +167,9 @@ $ docker run -d \
 
 By default, the registry stores its data on the local filesystem, whether you
 use a bind mount or a volume. You can store the registry data in an Amazon S3
-bucket, Google Cloud Platform, or on another storage back-end by using [storage
-drivers](./storage-drivers/index.md). For more information, see [storage
-configuration options](./configuration.md#storage).
+bucket, Google Cloud Platform, or on another storage back-end by using
+[storage drivers](./storage-drivers/index.md). For more information, see
+[storage configuration options](./configuration.md#storage).
 
 ## Run an externally-accessible registry
 
@@ -176,8 +177,8 @@ Running a registry only accessible on `localhost` has limited usefulness. In
 order to make your registry accessible to external hosts, you must first secure
 it using TLS.
 
-This example is extended in [Run a registry as a
-service](#run-a-registry-as-a-service) below.
+This example is extended in [Run the registry as a
+service](#run-the-registry-as-a-service) below.
 
 ### Get a certificate
 
@@ -216,7 +217,7 @@ If you have been issued an _intermediate_ certificate instead, see
     $ docker run -d \
       --restart=always \
       --name registry \
-      -v `pwd`/certs:/certs \
+      -v "$(pwd)"/certs:/certs \
       -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
       -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
@@ -229,9 +230,9 @@ If you have been issued an _intermediate_ certificate instead, see
 
     ```bash
     $ docker pull ubuntu:16.04
-    $ docker tag ubuntu:16.04 myregistrydomain.com/my-ubuntu
-    $ docker push myregistrydomain.com/my-ubuntu
-    $ docker pull myregistrydomain.com/my-ubuntu
+    $ docker tag ubuntu:16.04 myregistry.domain.com/my-ubuntu
+    $ docker push myregistry.domain.com/my-ubuntu
+    $ docker pull myregistry.domain.com/my-ubuntu
     ```
 
 #### Use an intermediate certificate
@@ -259,18 +260,17 @@ and the relevant section of the
 
 It is possible to use a self-signed certificate, or to use our registry
 insecurely. Unless you have set up verification for your self-signed
-certificate, this is for testing only. See [run an insecure
-registry](insecure.md).
+certificate, this is for testing only. See [run an insecure registry](insecure.md).
 
 ## Run the registry as a service
 
-[Swarm services](/engine/swarm/services.md) provide several advantages over
+[Swarm services](../engine/swarm/services.md) provide several advantages over
 standalone containers. They use a declarative model, which means that you define
 the desired state and Docker works to keep your service in that state. Services
 provide automatic load balancing scaling, and the ability to control the
 distribution of your service, among other advantages. Services also allow you to
 store sensitive data such as TLS certificates in
-[secrets](/engine/swarm/secrets.md).
+[secrets](../engine/swarm/secrets.md).
 
 The storage back-end you use determines whether you use a fully scaled service
 or a service with either only a single node or a node constraint.
@@ -322,15 +322,15 @@ $ docker service create \
   --secret domain.key \
   --constraint 'node.labels.registry==true' \
   --mount type=bind,src=/mnt/registry,dst=/var/lib/registry \
-  -e REGISTRY_HTTP_ADDR=0.0.0.0:80 \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/domain.crt \
   -e REGISTRY_HTTP_TLS_KEY=/run/secrets/domain.key \
-  --publish published=80,target=80 \
+  --publish published=443,target=443 \
   --replicas 1 \
   registry:2
 ```
 
-You can access the service on port 80 of any swarm node. Docker sends the
+You can access the service on port 443 of any swarm node. Docker sends the
 requests to the node which is running the service.
 
 ## Load balancing considerations
@@ -425,11 +425,11 @@ secrets.
       -p 5000:5000 \
       --restart=always \
       --name registry \
-      -v `pwd`/auth:/auth \
+      -v "$(pwd)"/auth:/auth \
       -e "REGISTRY_AUTH=htpasswd" \
       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
-      -v `pwd`/certs:/certs \
+      -v "$(pwd)"/certs:/certs \
       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
       -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
       registry:2
@@ -458,8 +458,8 @@ secrets.
 You may want to leverage more advanced basic auth implementations by using a
 proxy in front of the registry. See the [recipes list](recipes/index.md).
 
-The registry also supports delegated authentiation, which redirects users to a
-specific, trusted token server. This approach is more complicated to set up, and
+The registry also supports delegated authentication which redirects users to a
+specific trusted token server. This approach is more complicated to set up, and
 only makes sense if you need to fully configure ACLs and need more control over
 the registry's integration into your global authorization and authentication
 systems. Refer to the following [background information](spec/auth/token.md) and

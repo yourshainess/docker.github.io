@@ -2,10 +2,23 @@
 description: Configuring and troubleshooting the Docker daemon
 keywords: docker, daemon, configuration, troubleshooting
 redirect_from:
+- /engine/articles/chef/
 - /engine/articles/configuring/
+- /engine/articles/dsc/
+- /engine/articles/puppet/
 - /engine/admin/configuring/
 - /engine/admin/
+- /engine/admin/ansible/
+- /engine/admin/chef/
+- /engine/admin/dsc/
+- /engine/admin/puppet/
 - /engine/userguide/
+- /config/thirdparty/
+- /config/thirdparty/ansible/
+- /config/thirdparty/chef/
+- /config/thirdparty/dsc/
+- /config/thirdparty/puppet/
+
 title: Configure and troubleshoot the Docker daemon
 ---
 
@@ -16,18 +29,24 @@ daemon if you run into issues.
 
 ## Start the daemon using operating system utilities
 
+On a typical installation the Docker daemon is started by a system utility,
+not manually by a user. This makes it easier to automatically start Docker when
+the machine reboots.
+
 The command to start Docker depends on your operating system. Check the correct
-page under [Install Docker](/install/index.md). To configure Docker
+page under [Install Docker](../../engine/install/index.md). To configure Docker
 to start automatically at system boot, see
-[Configure Docker to start on boot](/install/linux/linux-postinstall.md#configure-docker-to-start-on-boot).
+[Configure Docker to start on boot](../../engine/install/linux-postinstall.md#configure-docker-to-start-on-boot).
 
 ## Start the daemon manually
 
-Typically, you start Docker using operating system utilities. For debugging
-purposes, you can start Docker manually using the `dockerd` command. You
-may need to use `sudo`, depending on your operating system configuration. When
-you start Docker this way, it runs in the foreground and sends its logs directly
-to your terminal.
+If you don't want to use a system utility to manage the Docker daemon, or
+just want to test things out, you can manually run it using the `dockerd`
+command. You may need to use `sudo`, depending on your operating system
+configuration.
+
+When you start Docker this way, it runs in the foreground and sends its logs
+directly to your terminal.
 
 ```bash
 $ dockerd
@@ -35,8 +54,6 @@ $ dockerd
 INFO[0000] +job init_networkdriver()
 INFO[0000] +job serveapi(unix:///var/run/docker.sock)
 INFO[0000] Listening for HTTP on unix (/var/run/docker.sock)
-...
-...
 ```
 
 To stop Docker when you have started it manually, issue a `Ctrl+C` in your
@@ -44,28 +61,21 @@ terminal.
 
 ## Configure the Docker daemon
 
-The daemon includes many configuration options, which you can pass as flags
-when starting Docker manually, or set in the `daemon.json` configuration file.
-The second method is recommended because those configuration changes persist
-when you restart Docker.
+There are two ways to configure the Docker daemon:
 
-See [dockerd](/engine/reference/commandline/dockerd.md) for a full list of
-configuration options.
+* Use a JSON configuration file. This is the preferred option, since it keeps
+all configurations in a single place.
+* Use flags when starting `dockerd`.
 
-Here is an example of starting the Docker daemon manually with some configuration
-options:
+You can use both of these options together as long as you don't specify the
+same option both as a flag and in the JSON file. If that happens, the Docker
+daemon won't start and prints an error message.
 
-```bash
-$ dockerd -D --tls=true --tlscert=/var/docker/server.pem --tlskey=/var/docker/serverkey.pem -H tcp://192.168.59.3:2376
-```
+To configure the Docker daemon using a JSON file, create a file at
+`/etc/docker/daemon.json` on Linux systems, or `C:\ProgramData\docker\config\daemon.json`
+on Windows. On MacOS go to the whale in the taskbar > Preferences > Daemon > Advanced.
 
-This command enables debugging (`-D`), enables TLS (`-tls`), specifies the server
-certificate and key (`--tlscert` and `--tlskey`), and specifies the network
-interface where the daemon listens for connections (`-H`).
-
-A better approach is to put these options into the `daemon.json` file and
-restart Docker. This method works for every Docker platform. The following
-`daemon.json` example sets all the same options as the above command:
+Here's what the configuration file looks like:
 
 ```json
 {
@@ -77,13 +87,67 @@ restart Docker. This method works for every Docker platform. The following
 }
 ```
 
+With this configuration the Docker daemon runs in debug mode, uses TLS, and
+listens for traffic routed to `192.168.59.3` on port `2376`.
+You can learn what configuration options are available in the
+[dockerd reference docs](../../engine/reference/commandline/dockerd.md#daemon-configuration-file)
+
+You can also start the Docker daemon manually and configure it using flags.
+This can be useful for troubleshooting problems.
+
+Here's an example of how to manually start the Docker daemon, using the same
+configurations as above:
+
+```bash
+dockerd --debug \
+  --tls=true \
+  --tlscert=/var/docker/server.pem \
+  --tlskey=/var/docker/serverkey.pem \
+  --host tcp://192.168.59.3:2376
+```
+
+You can learn what configuration options are available in the
+[dockerd reference docs](../../engine/reference/commandline/dockerd.md), or by running:
+
+```
+dockerd --help
+```
+
 Many specific configuration options are discussed throughout the Docker
 documentation. Some places to go next include:
 
-- [Automatically start containers](/engine/admin/host_integration.md)
-- [Limit a container's resources](/engine/admin/resource_constraints.md)
-- [Configure storage drivers](/engine/userguide/storagedriver/index.md)
-- [Container security](/engine/security/index.md)
+- [Automatically start containers](../containers/start-containers-automatically.md)
+- [Limit a container's resources](../containers/resource_constraints.md)
+- [Configure storage drivers](../../storage/storagedriver/select-storage-driver.md)
+- [Container security](../../engine/security/index.md)
+
+## Docker daemon directory
+
+The Docker daemon persists all data in a single directory. This tracks everything
+related to Docker, including containers, images, volumes, service definition,
+and secrets.
+
+By default this directory is:
+
+* `/var/lib/docker` on Linux.
+* `C:\ProgramData\docker` on Windows.
+
+You can configure the Docker daemon to use a different directory, using the
+`data-root` configuration option.
+
+Since the state of a Docker daemon is kept on this directory, make sure
+you use a dedicated directory for each daemon. If two daemons share the same
+directory, for example, an NFS share, you are going to experience errors that
+are difficult to troubleshoot.
+
+## Troubleshoot the daemon
+
+You can enable debugging on the daemon to learn about the runtime activity of
+the daemon and to aid in troubleshooting. If the daemon is completely
+non-responsive, you can also
+[force a full stack trace](#force-a-stack-trace-to-be-logged) of all
+threads to be added to the daemon log by sending the `SIGUSR` signal to the
+Docker daemon.
 
 ### Troubleshoot conflicts between the `daemon.json` and startup scripts
 
@@ -101,7 +165,7 @@ If you see an error similar to this one and you are starting the daemon manually
 you may need to adjust your flags or the `daemon.json` to remove the conflict.
 
 > **Note**: If you see this specific error, continue to the
-> [next section](#use-the-hosts-key-in-daemon-json-with-systemd) for a workaround.
+> [next section](#use-the-hosts-key-in-daemonjson-with-systemd) for a workaround.
 
 If you are starting Docker using your operating system's init scripts, you may
 need to override the defaults in these scripts in ways that are specific to the
@@ -126,7 +190,7 @@ ExecStart=/usr/bin/dockerd
 ```
 
 There are other times when you might need to configure `systemd` with Docker, such as
-[configuring a HTTP or HTTPS proxy](/engine/admin/systemd/#httphttps-proxy).
+[configuring a HTTP or HTTPS proxy](systemd.md#httphttps-proxy).
 
 > **Note**: If you override this option and then do not specify a `hosts` entry in the `daemon.json`
 > or a `-H` flag when starting Docker manually, Docker fails to start.
@@ -135,18 +199,11 @@ Run `sudo systemctl daemon-reload` before attempting to start Docker. If Docker 
 successfully, it is now listening on the IP address specified in the `hosts` key of the
 `daemon.json` instead of a socket.
 
-> **Important**: Setting `hosts` in the `daemon.json` is not supported on Docker for Windows
-> or Docker for Mac.
+> **Important**: Setting `hosts` in the `daemon.json` is not supported on Docker Desktop for Windows
+> or Docker Desktop for Mac.
 {:.important}
 
-## Troubleshoot the daemon
 
-You can enable debugging on the daemon to learn about the runtime activity of
-the daemon and to aid in troubleshooting. If the daemon is completely
-non-responsive, you can also
-[force a full stack trace](#force-a-full-stack-trace-to-be-logged) of all
-threads to be added to the daemon log by sending the `SIGUSR` signal to the
-Docker daemon.
 
 ### Out Of Memory Exceptions (OOME)
 
@@ -155,7 +212,7 @@ you may experience an Out Of Memory Exception (OOME) and a container, or the
 Docker daemon, might be killed by the kernel OOM killer. To prevent this from
 happening, ensure that your application runs on hosts with adequate memory and
 see
-[Understand the risks of running out of memory](/engine/admin/resource_constraints.md#understand-the-risks-of-running-out-of-memory).
+[Understand the risks of running out of memory](../containers/resource_constraints.md#understand-the-risks-of-running-out-of-memory).
 
 ### Read the logs
 
@@ -167,7 +224,7 @@ subsystem used:
 |:----------------------|:-----------------------------------------------------------------------------------------|
 | RHEL, Oracle Linux    | `/var/log/messages`                                                                      |
 | Debian                | `/var/log/daemon.log`                                                                    |
-| Ubuntu 16.04+, CentOS | Use the command `journalctl -u docker.service`                                           |
+| Ubuntu 16.04+, CentOS | Use the command `journalctl -u docker.service` or `/var/log/syslog`                      |
 | Ubuntu 14.10-         | `/var/log/upstart/docker.log`                                                            |
 | macOS (Docker 18.01+) | `~/Library/Containers/com.docker.docker/Data/vms/0/console-ring`                         |
 | macOS (Docker <18.01) | `~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/console-ring` |
@@ -226,7 +283,9 @@ by sending a `SIGUSR1` signal to the daemon.
 
 - **Windows Server**:
 
-  Download [docker-signal](https://github.com/jhowardmsft/docker-signal).
+  Download [docker-signal](https://github.com/moby/docker-signal).
+  
+  Get the process ID of dockerd `Get-Process dockerd`.
 
   Run the executable with the flag `--pid=<PID of daemon>`.
 
@@ -245,10 +304,9 @@ The Docker daemon log can be viewed by using one of the following methods:
 - By running `journalctl -u docker.service` on Linux systems using `systemctl`
 - `/var/log/messages`, `/var/log/daemon.log`, or `/var/log/docker.log` on older
   Linux systems
-- By running `Get-EventLog -LogName Application -Source Docker -After (Get-Date).AddMinutes(-5) | Sort-Object Time | Export-CSV ~/last5minutes.CSV` on Docker EE for Windows Server
 
-> **Note**: It is not possible to manually generate a stack trace on Docker for
-> Mac or Docker for Windows. However, you can click the Docker taskbar icon and
+> **Note**: It is not possible to manually generate a stack trace on Docker Desktop for
+> Mac or Docker Desktop for Windows. However, you can click the Docker taskbar icon and
 > choose **Diagnose and feedback** to send information to Docker if you run into
 > issues.
 

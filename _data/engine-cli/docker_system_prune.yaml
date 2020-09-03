@@ -14,12 +14,18 @@ options:
   description: Remove all unused images not just dangling ones
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: filter
   value_type: filter
   description: Provide filter values (e.g. 'label=<key>=<value>')
   deprecated: false
   min_api_version: "1.28"
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: force
   shorthand: f
   value_type: bool
@@ -27,12 +33,18 @@ options:
   description: Do not prompt for confirmation
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: volumes
   value_type: bool
   default_value: "false"
   description: Prune volumes
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ```bash
   $ docker system prune
@@ -105,11 +117,13 @@ examples: |-
   Total reclaimed space: 13.5 MB
   ```
 
-  > **Note**: The `--volumes` option was added in Docker 17.06.1. Older versions
-  > of Docker prune volumes by default, along with other Docker objects. On older
-  > versions, run `docker container prune`, `docker network prune`, and
-  > `docker image prune` separately to remove unused containers, networks, and
-  > images, without removing volumes.
+  > **Note**
+  >
+  > The `--volumes` option was added in Docker 17.06.1. Older versions of Docker
+  > prune volumes by default, along with other Docker objects. On older versions,
+  > run `docker container prune`, `docker network prune`, and `docker image prune`
+  > separately to remove unused containers, networks, and images, without removing
+  > volumes.
 
 
   ### Filtering
@@ -141,4 +155,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.25"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: false
 

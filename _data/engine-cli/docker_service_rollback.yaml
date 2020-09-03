@@ -1,8 +1,14 @@
 command: docker service rollback
 short: Revert changes to a service's configuration
 long: |-
-  Roll back a specified service to its previous version from the swarm. This command must be run
-  targeting a manager node.
+  Roll back a specified service to its previous version from the swarm.
+
+  > **Note**
+  >
+  > This is a cluster management command, and must be executed on a swarm
+  > manager node. To learn about managers and workers, refer to the
+  > [Swarm mode section](https://docs.docker.com/engine/swarm/) in the
+  > documentation.
 usage: docker service rollback [OPTIONS] SERVICE
 pname: docker service
 plink: docker_service.yaml
@@ -16,6 +22,9 @@ options:
   deprecated: false
   min_api_version: "1.29"
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: quiet
   shorthand: q
   value_type: bool
@@ -23,6 +32,9 @@ options:
   description: Suppress progress output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ### Roll back to the previous version of a service
 
@@ -75,4 +87,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.31"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

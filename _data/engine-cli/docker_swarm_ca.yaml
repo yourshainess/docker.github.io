@@ -1,7 +1,14 @@
 command: docker swarm ca
 short: Display and rotate the root CA
-long: View or rotate the current swarm CA certificate. This command must target a
-  manager node.
+long: |-
+  View or rotate the current swarm CA certificate.
+
+  > **Note**
+  >
+  > This is a cluster management command, and must be executed on a swarm
+  > manager node. To learn about managers and workers, refer to the
+  > [Swarm mode section](https://docs.docker.com/engine/swarm/) in the
+  > documentation.
 usage: docker swarm ca [OPTIONS]
 pname: docker swarm
 plink: docker_swarm.yaml
@@ -12,18 +19,27 @@ options:
     Path to the PEM-formatted root CA certificate to use for the new cluster
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: ca-key
   value_type: pem-file
   description: |
     Path to the PEM-formatted root CA key to use for the new cluster
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: cert-expiry
   value_type: duration
   default_value: 2160h0m0s
   description: Validity period for node certificates (ns|us|ms|s|m|h)
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: detach
   shorthand: d
   value_type: bool
@@ -32,11 +48,17 @@ options:
     Exit immediately instead of waiting for the root rotation to converge
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: external-ca
   value_type: external-ca
   description: Specifications of one or more certificate signing endpoints
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: quiet
   shorthand: q
   value_type: bool
@@ -44,6 +66,9 @@ options:
   description: Suppress progress output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: rotate
   value_type: bool
   default_value: "false"
@@ -51,6 +76,9 @@ options:
     Rotate the swarm CA - if no certificate or key are provided, new ones will be generated
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   Run the `docker swarm ca` command without any options to view the current root CA certificate
   in PEM format.
@@ -118,7 +146,7 @@ examples: |-
   The root CA rotation will not be completed until all registered nodes have
   rotated their TLS certificates.  If the rotation is not completing within a
   reasonable amount of time, try running
-  `docker node ls --format {{.ID}} {{.Hostname}} {{.Status}} {{.TLSStatus}}` to
+  `docker node ls --format '{{.ID}} {{.Hostname}} {{.Status}} {{.TLSStatus}}'` to
   see if any nodes are down or otherwise unable to rotate TLS certificates.
 
 
@@ -129,4 +157,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.30"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

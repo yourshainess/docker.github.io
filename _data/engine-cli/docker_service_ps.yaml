@@ -1,8 +1,14 @@
 command: docker service ps
 short: List the tasks of one or more services
 long: |-
-  Lists the tasks that are running as part of the specified services. This command
-  has to be run targeting a manager node.
+  Lists the tasks that are running as part of the specified services.
+
+  > **Note**
+  >
+  > This is a cluster management command, and must be executed on a swarm
+  > manager node. To learn about managers and workers, refer to the
+  > [Swarm mode section](https://docs.docker.com/engine/swarm/) in the
+  > documentation.
 usage: docker service ps [OPTIONS] SERVICE [SERVICE...]
 pname: docker service
 plink: docker_service.yaml
@@ -13,23 +19,35 @@ options:
   description: Filter output based on conditions provided
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: format
   value_type: string
   description: Pretty-print tasks using a Go template
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-resolve
   value_type: bool
   default_value: "false"
   description: Do not map IDs to Names
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: no-trunc
   value_type: bool
   default_value: "false"
   description: Do not truncate output
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 - option: quiet
   shorthand: q
   value_type: bool
@@ -37,6 +55,9 @@ options:
   description: Only display task IDs
   deprecated: false
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ### List the tasks that are part of a service
 
@@ -175,7 +196,7 @@ examples: |-
   `table` directive, includes column headers as well.
 
   The following example uses a template without headers and outputs the
-  `Name` and `Image` entries separated by a colon for all tasks:
+  `Name` and `Image` entries separated by a colon (`:`) for all tasks:
 
   ```bash
   $ docker service ps --format "{{.Name}}: {{.Image}}" top
@@ -186,4 +207,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.24"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: true
 

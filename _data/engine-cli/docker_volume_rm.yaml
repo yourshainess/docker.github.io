@@ -14,12 +14,19 @@ options:
   deprecated: false
   min_api_version: "1.25"
   experimental: false
+  experimentalcli: false
+  kubernetes: false
+  swarm: false
 examples: |-
   ```bash
-    $ docker volume rm hello
-    hello
+  $ docker volume rm hello
+
+  hello
   ```
 deprecated: false
 min_api_version: "1.21"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: false
 

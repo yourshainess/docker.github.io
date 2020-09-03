@@ -7,7 +7,7 @@ long: |-
    * env variables
    * source of mounts
    * path of devices
-   * arg
+   * args
 usage: docker plugin set PLUGIN KEY=VALUE [KEY=VALUE...]
 pname: docker plugin
 plink: docker_plugin.yaml
@@ -42,7 +42,9 @@ examples: |-
   /bar
   ```
 
-  > **Note**: Since only `source` is settable in `mymount`,
+  > **Note**
+  >
+  > Since only `source` is settable in `mymount`,
   > `docker plugins set mymount=/bar myplugin` would work too.
 
   ### Change a device path
@@ -62,7 +64,8 @@ examples: |-
   /dev/bar
   ```
 
-  > **Note**: Since only `path` is settable in `mydevice`,
+  > **Note**
+  > Since only `path` is settable in `mydevice`,
   > `docker plugins set mydevice=/dev/bar myplugin` would work too.
 
   ### Change the source of the arguments
@@ -83,4 +86,7 @@ examples: |-
 deprecated: false
 min_api_version: "1.25"
 experimental: false
+experimentalcli: false
+kubernetes: false
+swarm: false
 

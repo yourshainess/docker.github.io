@@ -1,16 +1,34 @@
 # Docs @ Docker
+Welcome to the repo for our documentation. This is the source for	
+[https://docs.docker.com/](https://docs.docker.com/).	
 
-Welcome to the repo for our documentation. This is the source for
-[https://docs.docker.com/](https://docs.docker.com/).
-
-Feel free to send us pull requests and file issues. Our docs are completely
+Feel free to send us pull requests and file issues. Our docs are completely	
 open source and we deeply appreciate contributions from our community!
+## Table of Contents
+
+- [Providing feedback](#providing-feedback)
+- [Contributing](#contributing)
+  - [Files not edited here](#files-not-edited-here)
+  - [Overall doc improvements](#overall-doc-improvements)
+- [Per-PR staging on GitHub](#per-pr-staging-on-github)
+- [Build the docs locally](#build-the-docs-locally)
+- [Read these docs offline](#read-these-docs-offline)
+- [Important files](#important-files)
+- [Relative linking for GitHub viewing](#relative-linking-for-github-viewing)
+  - [Testing changes and practical guidance](#testing-changes-and-practical-guidance)
+  - [Per-page front-matter](#per-page-front-matter)
+  - [Creating tabs](#creating-tabs)
+  - [Running in-page Javascript](#running-in-page-javascript)
+  - [Images](#images)
+- [Copyright and license](#copyright-and-license)
+
 
 ## Providing feedback
 
-We really want your feedback, and we've made it easy. You can edit, rate, or
-file an issue at the bottom of every page on
-[https://docs.docker.com/](https://docs.docker.com/).
+We really want your feedback, and we've made it easy. You can edit a page or
+request changes in the right column of every page on
+[docs.docker.com](https://docs.docker.com/). You can also rate each page by
+clicking a link at the footer.
 
 **Only file issues about the documentation in this repository.** One way
 to think about this is that you should file a bug here if your issue is that you
@@ -33,7 +51,7 @@ help. If a reviewer realizes you have based your work on the wrong branch, we'll
 let you know so that you can rebase it.
 
 >**Note**: To contribute code to Docker projects, see the
-[Contribution guidelines](/opensource/project/who-written-for/).
+[Contribution guidelines](CONTRIBUTING.md).
 
 ### Files not edited here
 
@@ -45,66 +63,26 @@ in the `source:` key in the YAML file.
 
 ### Overall doc improvements
 
-Most commits will be made against the `master` branch. This include:
+Pull requests should be opened against the `master` branch, this includes:
 
 - Conceptual and task-based information not specific to new features
 - Restructuring / rewriting
 - Doc bug fixing
 - Typos and grammar errors
 
-One quirk of this project is that the `master` branch is where the live docs are
-published from, so upcoming features can't be documented there. See
-[Specific new features for a project](#specific-new-features-for-a-project)
-for how to document upcoming features. These feature branches will be periodically
-merged with `master`, so don't worry about fixing typos and documentation bugs
-there.
-
->Do you enjoy creating graphics? Good graphics are key to great documentation,
-and we especially value contributions in this area.
-
-### Specific new features for a project
-
-Our docs cover many projects which release at different times. **If, and only if,
-your pull request relates to a currently unreleased feature of a project, base
-your work on that project's `vnext` branch.** These branches were created by
-cloning `master` and then importing a project's `master` branch's docs into it
-(at the time of the migration), in a way that preserved the commit history. When
-a project has a release, its `vnext` branch will be merged into `master` and your
-work will be visible on [https://docs.docker.com/](https://docs.docker.com/).
-
-The following `vnext` branches currently exist:
-
-- **[vnext-engine](https://github.com/docker/docker.github.io/tree/vnext-engine):**
-  docs for upcoming features in the [docker/docker](https://github.com/moby/moby/)
-  project
-
-- **[vnext-compose](https://github.com/docker/docker.github.io/tree/vnext-compose):**
-  docs for upcoming features in the [docker/compose](https://github.com/docker/compose/)
-  project
-
-- **[vnext-distribution](https://github.com/docker/docker.github.io/tree/vnext-distribution):**
-  docs for upcoming features in the [docker/distribution](https://github.com/docker/distribution/)
-  project
-
-- **[vnext-swarm](https://github.com/docker/docker.github.io/tree/vnext-swarm):**
-  docs for upcoming features in the [docker/swarm](https://github.com/docker/swarm/)
-  project
-
-- **[vnext-toolbox](https://github.com/docker/docker.github.io/tree/vnext-toolbox):**
-  docs for upcoming features in the [docker/toolbox](https://github.com/docker/toolbox/)
-  project
+> Do you enjoy creating graphics? Good graphics are key to great documentation,
+> and we especially value contributions in this area.
 
 ## Per-PR staging on GitHub
 
-For every PR against `master` and all the long-lived branches, a staged version
-of the site is built using Netlify. If the site builds, you will see
-**deploy/netlify — Deploy preview ready**. Otherwise, you will see an error.
-Click **Details** to review the staged site or the errors that prevented it from
-building. Review the staged site and amend your commit if necessary. Reviewers
-will also check the staged site before merging the PR, to protect the integrity
-of [https://docs.docker.com/](https://docs.docker.com/).
+For every PR against `master`, a staged version of the site is built using Netlify.
+If the site builds, you will see **deploy/netlify — Deploy preview ready**.
+Otherwise, you will see an error. Click **Details** to review the staged site or
+the errors that prevented it from building. Review the staged site and amend your
+commit if necessary. Reviewers will also check the staged site before merging the
+PR, to protect the integrity of [https://docs.docker.com/](https://docs.docker.com/).
 
-## Staging the docs
+## Build the docs locally
 
 You have three options:
 
@@ -113,11 +91,11 @@ You have three options:
     ```bash
     git clone --recursive https://github.com/docker/docker.github.io.git
     cd docker.github.io
-    docker-compose up
+    docker-compose up --build
     ```
 
     If you haven't got Docker Compose installed,
-    [follow these installation instructions](/compose/install/).
+    [follow these installation instructions](https://docs.docker.com/compose/install/).
 
     The container runs in the background and incrementally rebuilds the site each
     time a file changes. You can keep your browser open to http://localhost:4000/
@@ -129,7 +107,17 @@ You have three options:
     docker-compose down
     ```
 
-2.  Install Jekyll and GitHub Pages on your local machine.
+2. Build and run a Docker image for your working branch.
+
+   ```bash
+   DOCKER_BUILDKIT=1 docker build -t docker build -t docker-docs
+   docker run --rm -it -p 4000:4000 docker-docs
+   ```
+
+   After the `docker run` command, copy the URL provided in the container build output in a browser,
+   http://0.0.0.0:4000, and verify your changes.
+
+3.  Install Jekyll and GitHub Pages on your local machine.
 
     a. Clone this repo by running:
 
@@ -158,7 +146,7 @@ You have three options:
        bundle install
        ```
 
-       >**Note**: You may need to install some packages manually.   
+       >**Note**: You may need to install some packages manually.
 
     f. Change the directory to `docker.github.io`.
 
@@ -173,7 +161,8 @@ You have three options:
 
 To read the docs offline, you can use either a standalone container or a swarm service.
 To see all available tags, go to
-[Docker Cloud](https://cloud.docker.com/app/docs/repository/docker/docs/docker.github.io/tags).
+[Docker Hub](https://docs.docker.com/docker-hub/).
+
 The following examples use the `latest` tag:
 
 - Run a single container:
@@ -196,7 +185,7 @@ Either way, you can now access the docs at port 4000 on your Docker host.
 
 - `/_data/toc.yaml` defines the left-hand navigation for the docs
 - `/js/menu.js` defines most of the docs-specific JS such as TOC generation and menu syncing
-- `/css/documentation.css` defines the docs-specific style rules
+- `/css/style.scss` defines the docs-specific style rules
 - `/_layouts/docs.html` is the HTML template file, which defines the header and footer, and includes all the JS/CSS that serves the docs content
 
 ## Relative linking for GitHub viewing
@@ -228,6 +217,7 @@ following keys are supported. The title, description, and keywords are required.
 | toc_max                | no        | Ignored if `notoc` is set to `false`. The maximum heading level included in the in-page TOC. Defaults to `3`, to show `<h3>` headings. Set to the same as `toc_min` to only show `toc_min` level of headings. |
 | tree                   | no        | Either `true` or `false`. Set to `false` to disable the left-hand site-wide navigation for this page. Appropriate for some pages like the search page or the 404 page. |
 | no_ratings             | no        | Either `true` or `false`. Set to `true` to disable the page-ratings applet for this page. Defaults to `false`. |
+| skip_read_time             | no        | Set to `true` to disable the 'Estimated reading time' banner for this page. |
 
 The following is an example of valid (but contrived) page metadata. The order of
 the metadata elements in the front-matter is not important.
@@ -243,7 +233,7 @@ redirect_from:
 title: Get Docker for Ubuntu
 toc_min: 1
 toc_max: 6
-tree: false
+skip_read_time: true
 no_ratings: true
 ---
 ```
@@ -278,82 +268,35 @@ Bootstrap JS are loaded.
 
 > **Note**: In general, this is a bad idea.
 
-## Building archives and the live published docs
+### Images
 
-All the images described below are automatically built using Docker Cloud. To
-build the site manually, from scratch, including all utility and archive
-images, see the [README in the publish-tools branch](https://github.com/docker/docker.github.io/blob/publish-tools/README.md).
+Don't forget to remove images that are no longer used. Keep the images sorted
+in the local `images/` directory, with names that naturally group related images
+together in alphabetical order. For instance prefer `settings-file-share.png`
+and `settings-proxies.png` to `file-share-settings.png` and
+`proxies-settings.png`. You may also use numbers, especially in the case of a
+sequence, e.g., `run-only-the-images-you-trust-1.svg`
+`run-only-the-images-you-trust-2.png` `run-only-the-images-you-trust-3.png`.
 
-- Some utility images are built from Dockerfiles in the `publish-tools` branch.
-  See its [README](https://github.com/docker/docker.github.io/blob/publish-tools/README.md)
-  for details.
-- Each archive branch automatically builds an image tagged
-  `docs/docker.github.io:v<VERSION>` when a change is merged into that branch.
-- The `master` branch has a Dockerfile which uses the static HTML from each
-  archive image, in combination with the Markdown
-  files in `master` and some upstream resources which are fetched at build-time,
-  to create the full site at [https://docs.docker.com/](/). All
-  of the long-running branches, such as `vnext-engine`, `vnext-compose`, etc,
-  use the same logic.
+When applicable, capture windows rather than rectangular regions. This
+eliminates unpleasant background and saves the editors the need to crop.
 
-## Creating a new archive
+On Mac, capture windows without shadows. To this end, once you pressed
+`Command-Shift-4`, press Option while clicking on the window. To disable
+shadows once for all, run:
 
-When a new Docker CE Stable version is released, the previous state of `master`
-is archived into a version-specific branch like `v17.09`, by doing the following:
+```bash
+$ defaults write com.apple.screencapture disable-shadow -bool TRUE
+$ killall SystemUIServer  # restart it.
+```
 
-1.  Create branch based off the commit hash before the new version was released.
+You can restore shadows later with `-bool FALSE`.
 
-    ```bash
-    $ git checkout <HASH>
-    $ git checkout -b v17.09
-    ```
-
-2.  Run the `_scripts/fetch-upstream-resources.sh` script. This puts static
-    copies of the files in place that the `master`  build typically fetches
-    each build.
-
-    ```bash
-    $ _scripts/fetch-upstream/resources.sh
-    ```
-
-3.  Overwrite the `Dockerfile` with the `Dockerfile.archive` (use `cp` rather
-    than `mv` so you don't inadvertently remove either file). Edit the resulting
-    `Dockerfile` and set the `VER` build argument to the appropriate value, like
-    `v17.09`.
-
-    ```bash
-    $ mv Dockerfile.archive Dockerfile
-    $ vi Dockerfile
-
-      < edit the variable and save >
-    ```
-
-4.  Do `git status` and add all changes, being careful not to add anything extra
-    by accident. Commit your work.
-
-    ```bash
-    $ git status
-    $ git add <filename>
-    $ git add <filename> (etc etc etc)
-    $ git commit -m "Creating archive for 17.09 docs"
-    ```
-
-5.  Make sure the archive builds.
-
-    ```bash
-    $ docker build -t docker build -t docs/docker.github.io:v17.09 .
-    $ docker run --rm -it -p 4000:4000 docs/docker.github.io:v17.09
-    ```
-
-    After the `docker run` command, browse to `http://localhost:4000/` and
-    verify that the archive is self-browseable.
-
-6.  Push the branch to the upstream repository. Do not create a pull request
-    as there is no reference branch to compare against.
-
-    ```bash
-    $ git push upstream v17.09
-    ```
+In order to keep the Git repository light, _please_ compress the images
+(losslessly). On Mac you may use (ImageOptim)[https://imageoptim.com] for
+instance. Be sure to compress the images *before* adding them to the
+repository, doing it afterwards actually worsens the impact on the Git repo (but
+still optimizes the bandwidth during browsing).
 
 ## Copyright and license
 
